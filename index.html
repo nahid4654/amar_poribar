@@ -472,6 +472,19 @@ html.dark .hw-tag{color:#dbeafe}
 .hero-v2{min-height:196px;overflow:hidden}
 .hero-txt{max-width:50%}
 .hero-pic{position:absolute;right:-4px;bottom:0;width:60%;height:auto;max-width:none;max-height:none;object-fit:contain;object-position:right bottom;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 14%);mask-image:linear-gradient(to right,transparent 0,#000 14%);pointer-events:none}
+/* ===== উপরের অংশ: পুরো ছবি পটভূমি (v4) ===== */
+.top-hero{position:relative;overflow:hidden;border-radius:24px;padding:14px 16px 20px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(148,163,184,.14);background-color:#e8f3fb;background-image:linear-gradient(180deg,rgba(234,244,252,.95) 0%,rgba(234,244,252,.55) 22%,rgba(234,244,252,0) 40%),linear-gradient(90deg,rgba(236,249,246,.95) 0%,rgba(236,249,246,.7) 38%,rgba(236,249,246,0) 62%),var(--bgimg);background-size:100% 100%,100% 100%,cover;background-position:0 0,0 0,right bottom;background-repeat:no-repeat;box-shadow:0 8px 24px rgba(15,23,42,.08)}
+html.dark .top-hero{background-color:#0f1d33;background-image:linear-gradient(180deg,rgba(15,29,51,.9) 0%,rgba(15,29,51,.4) 22%,rgba(15,29,51,0) 40%),linear-gradient(90deg,rgba(15,29,51,.95) 0%,rgba(15,29,51,.7) 40%,rgba(15,29,51,0) 65%),var(--bgimg)}
+.top-hero .dash-top{padding:0}
+.top-hero .hero-txt{max-width:56%;position:relative;z-index:1}
+.top-hero .round{box-shadow:0 4px 14px rgba(15,23,42,.1)}
+
+/* দ্রুত কার্যক্রম: একই সারিতে ৪টি */
+.qa-grid{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:8px}
+.qa-grid .tile{width:auto;min-width:0;padding:8px 3px 9px}
+.qa-grid .tile-art{height:66px;margin-bottom:5px}
+.qa-grid .tile-art span{font-size:30px}
+.qa-grid .tile b{font-size:10.5px;line-height:1.25}
 </style>
 </head>
 <body>
@@ -737,6 +750,15 @@ const ASSETS = {
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const dg = s => L() === 'bn' ? String(s).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]) : String(s);
   const money = n => '৳ ' + dg(Math.round(Number(n) || 0).toLocaleString('en-US'));
+  const compact = n => {
+    const v = Math.round(Number(n) || 0), a = Math.abs(v), sg = v < 0 ? '-' : '';
+    const trim = x => x.toFixed(1).replace(/\.0$/, '');
+    if (a >= 1000000) return sg + dg(trim(a / 1000000)) + (L() === 'bn' ? ' মিলিয়ন' : 'M');
+    if (a >= 100000) return sg + dg(trim(a / 100000)) + (L() === 'bn' ? ' লক্ষ' : 'L');
+    if (a >= 1000) return sg + dg(trim(a / 1000)) + 'k';
+    return sg + dg(a);
+  };
+  const moneyC = n => '৳ ' + compact(n);
   function animateVisibleNumbers() {
     const nodes = document.querySelectorAll('[data-countup]');
     nodes.forEach(node => {
@@ -934,7 +956,7 @@ const ASSETS = {
     };
 
     const dates = Array.from({ length: 30 }, (_, i) => addDays(f30, i));
-    const W = 340, H = 196, PL = 40, PR = 10, PT = 12, PB = 26;
+    const W = 340, H = 196, PL = 56, PR = 10, PT = 12, PB = 26;
     const iw = W - PL - PR, ih = H - PT - PB;
     const rawMax = Math.max(1, ...inc, ...exp) * 1.1;
     const pow = Math.pow(10, Math.floor(Math.log10(rawMax)));
@@ -942,7 +964,7 @@ const ASSETS = {
     const X = i => PL + i * iw / 29;
     const Y = v => PT + ih - (v / mx) * ih;
     const path = arr => arr.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join('');
-    const kf = v => v >= 1000 ? dg(+(v / 1000).toFixed(1)) + 'k' : dg(Math.round(v));
+    const kf = v => compact(v);
     const fdShort = d => dg(d.slice(8) + '/' + d.slice(5, 7));
     const grid = [0, 1, 2, 3, 4].map(k => {
       const v = mx * k / 4, y = Y(v);
@@ -965,7 +987,7 @@ const ASSETS = {
       </svg>`;
 
     const sum = (cls, img, label, val, f) => `<button class="sum ${cls}" data-act="goDetail" data-f="${f}">
-        <img class="sum-img" src="${img}" alt="${esc(t(label))}"><b data-count="${val}">${money(val)}</b></button>`;
+        <img class="sum-img" src="${img}" alt="${esc(t(label))}"><b data-count="${val}">${moneyC(val)}</b></button>`;
 
     const tiles = [
       ['income', '💰', 'tIncome', 'income', 'form'],
@@ -983,22 +1005,20 @@ const ASSETS = {
         <b>${t(key)}</b></button>`).join('');
 
     return `<section class="page">
-      <header class="dash-top">
-        <div class="brand">
-          <div class="brand-logo"><img src="${ASSETS.logo}" alt=""></div>
-          <div class="brand-txt"><h1>${t('appName')}</h1><p>Amar Poribar</p></div>
-        </div>
-        <button class="round" data-act="go" data-to="notifications" aria-label="${t('notifications')}">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${bell ? `<i class="badge">${dg(bell)}</i>` : ''}</button>
-      </header>
-
-      <div class="hero hero-v2">
+      <div class="top-hero" style="--bgimg:url('${ASSETS.banner}')">
+        <header class="dash-top">
+          <div class="brand">
+            <div class="brand-logo"><img src="${ASSETS.logo}" alt=""></div>
+            <div class="brand-txt"><h1>${t('appName')}</h1><p>Amar Poribar</p></div>
+          </div>
+          <button class="round" data-act="go" data-to="notifications" aria-label="${t('notifications')}">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${bell ? `<i class="badge">${dg(bell)}</i>` : ''}</button>
+        </header>
         <div class="hero-txt">
           <small class="hw-welcome">${t('welcomeOnly')}</small>
           <h2 class="hw-name">${esc(S.data.session.name)}!</h2>
           <p class="hw-tag">${esc(t('homeSub'))}</p>
         </div>
-        <img class="hero-pic" src="${ASSETS.banner}" alt="">
       </div>
 
       <div class="sums">
@@ -1119,10 +1139,10 @@ const ASSETS = {
     return `<section class="page">${head(t('report'))}
       <div class="chips">${per}</div>
       <div class="card"><div class="summary">
-        <div><small>${t('reportIncome')}</small><b class="amt income">${money(inc)}</b></div>
-        <div><small>${t('reportExpense')}</small><b class="amt expense">${money(exp)}</b></div>
-        <div><small>${t('reportBalance')}</small><b>${money(inc - exp)}</b></div>
-        <div><small>${t('reportSavings')}</small><b class="amt savings">${money(sav)}</b></div>
+        <div><small>${t('reportIncome')}</small><b class="amt income">${moneyC(inc)}</b></div>
+        <div><small>${t('reportExpense')}</small><b class="amt expense">${moneyC(exp)}</b></div>
+        <div><small>${t('reportBalance')}</small><b>${moneyC(inc - exp)}</b></div>
+        <div><small>${t('reportSavings')}</small><b class="amt savings">${moneyC(sav)}</b></div>
       </div></div>
       <div class="card"><h4>${t('trend')}</h4>
         <div class="legend"><span><i class="dot g"></i>${t('income')}</span><span><i class="dot r"></i>${t('expense')}</span></div>
