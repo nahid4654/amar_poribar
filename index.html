@@ -653,6 +653,96 @@ html.dark .qa-grid .tile{background:var(--card);border-color:var(--line)}
 .sp-spin{position:absolute;left:30.5%;top:91%;width:5.2%;aspect-ratio:1/1;border-radius:50%;background:#fff;
   -webkit-mask:conic-gradient(transparent 0 25%,#000 25% 100%);mask:conic-gradient(transparent 0 25%,#000 25% 100%);animation:spRot .9s linear infinite;opacity:.95}
 @keyframes spRot{to{transform:rotate(360deg)}}
+
+/* =====================================================
+   প্রিমিয়াম অ্যানিমেশন (শুধু transform ও opacity — Android-এ মসৃণ)
+   ===================================================== */
+.page-enter > section{animation:pgIn .5s var(--ease-out) backwards}
+@keyframes pgIn{from{opacity:0;transform:translate3d(26px,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+
+/* হোমপেজ: কার্ড Fade-in + Slide-up, ধাপে ধাপে */
+.page-enter .stat{animation:cardUp .6s var(--ease-out) backwards}
+.page-enter .stats .stat:nth-child(1){animation-delay:.08s}
+.page-enter .stats .stat:nth-child(2){animation-delay:.16s}
+.page-enter .stats .stat:nth-child(3){animation-delay:.24s}
+.page-enter .stats .stat:nth-child(4){animation-delay:.32s}
+.page-enter .glance-card{animation:cardUp .7s .26s var(--ease-out) backwards}
+.page-enter .tile{animation:cardUp .6s var(--ease-out) backwards}
+.page-enter .tile:nth-child(1){animation-delay:.36s}
+.page-enter .tile:nth-child(2){animation-delay:.42s}
+.page-enter .tile:nth-child(3){animation-delay:.48s}
+.page-enter .tile:nth-child(4){animation-delay:.54s}
+.page-enter .tile:nth-child(5){animation-delay:.60s}
+.page-enter .tile:nth-child(6){animation-delay:.66s}
+.page-enter .tile:nth-child(7){animation-delay:.72s}
+.page-enter .tile:nth-child(8){animation-delay:.78s}
+.page-enter .card,.page-enter .row{animation:cardUp .55s var(--ease-out) backwards}
+@keyframes cardUp{from{opacity:0;transform:translate3d(0,22px,0) scale(.98)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+
+/* ট্যাপ/ক্লিক অ্যানিমেশন */
+.btn,.tile,.chip,.mini,.icon-btn,.lets-start,.fab,.bottomnav button,.switch,.link,.lang button{
+  transition:transform .16s var(--ease-out),background-color .25s,box-shadow .25s,opacity .25s}
+.btn:active,.tile:active,.chip:active,.mini:active,.icon-btn:active,.lets-start:active,
+.fab:active,.bottomnav button:active,.switch:active,.lang button:active,.link:active{transform:scale(.93)}
+.btn:active,.lets-start:active{box-shadow:0 0 0 6px rgba(30,58,138,.10)}
+
+/* আইকন ও কার্ডে সূক্ষ্ম নড়াচড়া */
+.tile-art img,.sum-img{animation:floatIcon 5s ease-in-out infinite}
+.tile:nth-child(even) .tile-art img{animation-delay:-2.3s}
+@keyframes floatIcon{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-3px,0)}}
+
+/* লোডার */
+.ld-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:12px}
+.ld-ring{width:54px;height:54px;border-radius:50%;border:4px solid #dbeafe;border-top-color:#1e3a8a;border-right-color:#16a34a;animation:ldSpin .9s linear infinite}
+.ld-txt{margin:0;font-weight:700;color:var(--navy);animation:ldPulse 1.4s ease-in-out infinite}
+@keyframes ldSpin{to{transform:rotate(360deg)}}
+@keyframes ldPulse{50%{opacity:.45}}
+
+/* ===== প্রথমবার: পরিচিতি পেজ + সবুজ "শুরু করুন" বাটন ===== */
+.welcome-full{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;padding:34px 22px 30px;max-width:460px;margin:0 auto;text-align:left}
+.wl-title{margin:6px 0 4px;font-size:32px;font-weight:800;color:var(--navy);text-align:center}
+html.dark .wl-title{color:#fff}
+.wl-tag{margin:0 0 16px;font-size:15px;font-weight:700;color:#166534;text-align:center;line-height:1.5}
+.wl-desc{margin:0 0 18px;font-size:14px;line-height:1.75;color:var(--text);opacity:.9}
+.wl-fhead{margin:0 0 8px;font-size:14px;font-weight:700;color:var(--navy)}
+.wl-list{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+.wl-list li{position:relative;padding:10px 14px 10px 40px;border-radius:14px;background:var(--card);font-size:14px;box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.wl-list li::before{content:"✓";position:absolute;left:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#dcfce7;color:#15803d;font-size:12px;font-weight:800;display:grid;place-items:center}
+.wl-start{margin-top:26px;width:100%;border:0;border-radius:24px;padding:22px 16px 20px;background:#176b4c;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 12px 26px rgba(23,107,76,.28);animation:btnIn .8s .2s var(--ease-out) backwards}
+.wl-start-t{font-size:28px;font-weight:800;line-height:1.2}
+.wl-start-s{font-size:15px;font-weight:500;opacity:.95;line-height:1.5}
+.wl-start:active{transform:scale(.97)}
+
+/* লগইনের পর উপদেশ */
+.tip-page{display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 6px}
+.tp-ico{font-size:44px;animation:floatIcon 3s ease-in-out infinite}
+.tp-h{margin:0;font-size:18px;color:var(--navy)}
+.tp-txt{margin:0;font-size:17px;line-height:1.7;font-weight:600;color:var(--text);animation:spIn .9s ease-out .1s backwards}
+
+/* ===== স্প্ল্যাশের লোডার: ছাপানো লোডারের ওপর একটাই অ্যানিমেটেড লোডার ===== */
+.sp-panel{position:absolute;left:20%;top:86.5%;width:60%;height:12%;border-radius:6cqw;background:#ffffff;
+  box-shadow:0 2cqw 5cqw rgba(15,23,42,.14);border:.4cqw solid #d9efe2;box-sizing:border-box}
+.sp-load-t{position:absolute;left:0;right:0;top:12%;text-align:center;font-size:3.6cqw;font-weight:700;color:#166534;line-height:1}
+.sp-track{left:27%;top:91.6%;width:46%;height:2.6%}
+.sp-spin{left:21%;top:91.4%;width:4.4%;background:#16a34a}
+
+/* ===== লগইন: ছবি একটু ছোট (কাটবে না) ===== */
+.auth-google-only .auth-photo{width:min(100%,300px);margin:0 auto}
+
+/* ===== লগইন পেজ: শিরোনাম, সুবিধার চিপ, নিরাপত্তার বার্তা, ভাসমান আলো ===== */
+.auth-google-only{position:relative;overflow:hidden;gap:22px}
+.auth-head{position:relative;z-index:1;text-align:center}
+.auth-h{margin:0;font-size:30px;font-weight:800;color:var(--navy);animation:authRise 1.1s .15s var(--ease-out) backwards}
+html.dark .auth-h{color:#fff}
+.auth-sub-t{margin:6px 0 0;font-size:14px;color:#166534;font-weight:600;animation:authRise 1.1s .35s var(--ease-out) backwards}
+.auth-chips{position:relative;z-index:1;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;animation:authRise 1s .9s var(--ease-out) backwards}
+.auth-chip{padding:7px 14px;border-radius:20px;background:var(--card);font-size:13px;font-weight:700;color:var(--navy);box-shadow:0 2px 8px rgba(15,23,42,.06)}
+.auth-note{position:relative;z-index:1;margin:0;font-size:13px;color:var(--muted);animation:authRise 1s 1.1s var(--ease-out) backwards}
+.auth-blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.35;pointer-events:none;z-index:0;animation:blobDrift 14s ease-in-out infinite alternate}
+.auth-blob.b1{width:220px;height:220px;background:#86efac;left:-70px;top:8%}
+.auth-blob.b2{width:200px;height:200px;background:#93c5fd;right:-80px;top:40%;animation-delay:-5s}
+.auth-blob.b3{width:180px;height:180px;background:#fde68a;left:20%;bottom:6%;animation-delay:-9s}
+@keyframes blobDrift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(18px,-22px,0) scale(1.08)}}
 </style>
 </head>
 <body>
@@ -661,6 +751,7 @@ html.dark .qa-grid .tile{background:var(--card);border-color:var(--line)}
   <div class="splash-frame">
     <img class="splash-art" src="" alt="">
     <div class="sp-tip"><p class="sp-tip-text"></p></div>
+    <div class="sp-panel"><span class="sp-load-t"></span></div>
     <div class="sp-track"><i class="sp-fill"></i><span class="sp-shine"></span></div>
     <div class="sp-spin"></div>
   </div>
@@ -736,6 +827,24 @@ const T = {
   welcomeOnly:{bn:'স্বাগতম,',en:'Welcome,'},
   glanceAll:{bn:'এক নজরে সব',en:'At a glance'},
   letsStart:{bn:'লেট স্টার্ট',en:"Let's Start"},
+  loading:{bn:'লোড হচ্ছে...',en:'Loading...'},
+  appLoading:{bn:'অ্যাপটি লোড হচ্ছে...',en:'Loading the app...'},
+  authSub:{bn:'পরিবারের আয়-ব্যয় ও সঞ্চয়ের সহজ হিসাব',en:'Simple family income, expense and savings accounts'},
+  chipIncome:{bn:'আয়-ব্যয়',en:'Income & expense'},
+  chipSave:{bn:'সঞ্চয়',en:'Savings'},
+  chipBudget:{bn:'বাজেট',en:'Budget'},
+  secNote:{bn:'আপনার হিসাব শুধু আপনিই দেখতে পারবেন',en:'Only you can see your accounts'},
+  wlTag:{bn:'পরিবারের আয়-ব্যয়, সঞ্চয় ও হিসাব ব্যবস্থাপনার সহজ সমাধান।',en:'A simple solution for family income, expenses, savings and accounts.'},
+  wlDesc:{bn:'আপনার পরিবারের প্রতিদিনের আয়, খরচ, সঞ্চয় ও বাজেটের হিসাব রাখুন এক জায়গায়। পরিবারের সদস্যদের সঙ্গে হিসাবের স্বচ্ছতা বজায় রাখুন এবং পরিকল্পিতভাবে গড়ে তুলুন সুন্দর আর্থিক ভবিষ্যৎ।',en:"Keep your family's daily income, expenses, savings and budget in one place. Keep accounts transparent with your family and plan a better financial future."},
+  wlFeaturesHead:{bn:'এই অ্যাপে যা যা করতে পারবেন:',en:'What you can do in this app:'},
+  wlF1:{bn:'আয় ও ব্যয়ের হিসাব রাখা',en:'Track income and expenses'},
+  wlF2:{bn:'সঞ্চয়ের হিসাব পরিচালনা',en:'Manage savings'},
+  wlF3:{bn:'মাসিক বাজেট তৈরি',en:'Create monthly budgets'},
+  wlF4:{bn:'পরিবারের সদস্যদের হিসাব পরিচালনা',en:'Manage family members'},
+  wlF5:{bn:'বিস্তারিত রিপোর্ট ও বিবরণ দেখা',en:'View detailed reports and records'},
+  wlBtn:{bn:'শুরু করুন',en:'Get Started'},
+  wlBtnSub:{bn:'আপনার পরিবারের হিসাব হোক আরও সহজ ও সুন্দর',en:'Make your family accounts simpler and better'},
+  tipHead:{bn:'আজকের উপদেশ',en:"Today's thought"},
   quickActions:{bn:'দ্রুত কার্যক্রম',en:'Quick actions'},
   adminPanel:{bn:'অ্যাডমিন প্যানেল',en:'Admin panel'},
   adminUsers:{bn:'জন ব্যবহারকারী (নিবন্ধিত)',en:'registered users'},
@@ -1175,15 +1284,31 @@ const SUB_IMAGES = {
   function splashText() { /* splash uses the artwork */ }
 
   /* ---------- নেভিগেশন ---------- */
-  function go(view, params) {
+  function go(view, params, replace) {
     S.view = view;
     S.params = params || {};
     closeOverlay();
-    render();
+    const st = { view: view, params: S.params, authMode: S.authMode };
+    if (replace) history.replaceState(st, '');
+    else history.pushState(st, '');
+    render(true);
     window.scrollTo(0, 0);
   }
 
-  function render() {
+  /* Android/ব্রাউজারের Back: অ্যাপের ভেতরের আগের পেজে ফেরে, অ্যাপ বন্ধ হয় না */
+  window.addEventListener('popstate', e => {
+    const st = e.state;
+    if (!st || !st.view) return;
+    S.view = st.view;
+    S.params = st.params || {};
+    S.authMode = st.authMode || S.authMode;
+    closeOverlay();
+    render(true);
+    window.scrollTo(0, 0);
+  });
+
+  function render(anim) {
+    $('#main').classList.toggle('page-enter', !!anim);
     applySettings();
     splashText();
     const views = { home: viewHome, details: viewDetails, budget: viewBudget, report: viewReport, family: viewFamily,
@@ -1202,14 +1327,14 @@ const SUB_IMAGES = {
     if (!show) { nav.innerHTML = ''; return; }
     const n = alerts().length;
     const item = (id, ico, label, badge) =>
-      `<button class="${S.view === id ? 'active' : ''}" data-act="go" data-to="${id}"><span>${ico}</span><small>${t(label)}</small>${badge ? `<i class="badge">${dg(badge)}</i>` : ''}</button>`;
+      `<button class="${S.view === id ? 'active' : ''}" data-act="go" data-to="${id}" data-replace="1"><span>${ico}</span><small>${t(label)}</small>${badge ? `<i class="badge">${dg(badge)}</i>` : ''}</button>`;
     nav.innerHTML = item('home', '🏠', 'navHome') + item('report', '📊', 'navReport')
       + `<button class="fab" data-act="addmenu" aria-label="add">+</button>`
       + item('notifications', '🔔', 'navNotif', n) + item('settings', '👤', 'navProfile');
   }
 
   function head(title) {
-    return `<div class="page-head"><button class="icon-btn" data-act="go" data-to="home">←</button><h2>${title}</h2></div>`;
+    return `<div class="page-head"><button class="icon-btn" data-act="back">←</button><h2>${title}</h2></div>`;
   }
 
   /* ---------- ড্যাশবোর্ড ---------- */
@@ -1499,7 +1624,7 @@ const SUB_IMAGES = {
   }
 
   function headBack(title, to) {
-    return `<div class="page-head"><button class="icon-btn" data-act="go" data-to="${to}">←</button><h2>${title}</h2></div>`;
+    return `<div class="page-head"><button class="icon-btn" data-act="back">←</button><h2>${title}</h2></div>`;
   }
 
   function viewWallet() {
@@ -1620,16 +1745,50 @@ const SUB_IMAGES = {
       <button class="${L() === 'en' ? 'on' : ''}" data-act="lang" data-l="en">English</button></div>`;
 
   function viewWelcome() {
-    return `<section class="welcome-only">
-      <button class="lets-start" data-act="go" data-to="auth" data-m="login">${t('letsStart')}</button>
+    const feats = ['wlF1','wlF2','wlF3','wlF4','wlF5'].map(k => `<li>${t(k)}</li>`).join('');
+    return `<section class="welcome-only welcome-full">
+      <div class="wl-top">
+        <h1 class="wl-title">${t('appName')}</h1>
+        <p class="wl-tag">${t('wlTag')}</p>
+        <p class="wl-desc">${t('wlDesc')}</p>
+        <p class="wl-fhead">${t('wlFeaturesHead')}</p>
+        <ul class="wl-list">${feats}</ul>
+      </div>
+      <button class="wl-start" data-act="go" data-to="auth" data-m="login">
+        <span class="wl-start-t">${t('wlBtn')}</span>
+        <span class="wl-start-s">${t('wlBtnSub')}</span>
+      </button>
     </section>`;
   }
 
+  const GMAIL_SVG = '<svg class="gm-svg" viewBox="0 0 48 48" width="24" height="24" aria-hidden="true"><path fill="#4caf50" d="M45 16.2l-5 2.75-5 4.75V40h7c1.657 0 3-1.343 3-3V16.2z"/><path fill="#1e88e5" d="M3 16.2l3.614 1.71L13 23.7V40H6c-1.657 0-3-1.343-3-3V16.2z"/><path fill="#e53935" d="M35 11.2L24 19.45 13 11.2 12 17l1 6.7 11 8.25 11-8.25L36 17z"/><path fill="#c62828" d="M3 12.298V16.2l10 7.5V11.2L9.876 8.859C9.132 8.301 8.228 8 7.298 8 4.924 8 3 9.924 3 12.298z"/><path fill="#fbc02d" d="M45 12.298V16.2l-10 7.5V11.2l3.124-2.341C39.868 8.301 40.772 8 41.702 8 44.076 8 45 9.924 45 12.298z"/></svg>';
+
   function viewAuth() {
     return `<section class="auth-page auth-google-only">
+      <span class="auth-blob b1"></span><span class="auth-blob b2"></span><span class="auth-blob b3"></span>
+      <div class="auth-head">
+        <h1 class="auth-h">${t('appName')}</h1>
+        <p class="auth-sub-t">${t('authSub')}</p>
+      </div>
       <div class="auth-photo"><img class="auth-hero-img" src="${ASSETS.loginPhoto}" alt=""></div>
-      <div class="rgb-wrap"><button class="btn google-btn block" data-act="googleLogin"><span class="gm-logo"><svg class="gm-svg" viewBox="0 0 48 48" width="24" height="24" aria-hidden="true"><path fill="#4caf50" d="M45 16.2l-5 2.75-5 4.75V40h7c1.657 0 3-1.343 3-3V16.2z"/><path fill="#1e88e5" d="M3 16.2l3.614 1.71L13 23.7V40H6c-1.657 0-3-1.343-3-3V16.2z"/><path fill="#e53935" d="M35 11.2L24 19.45 13 11.2 12 17l1 6.7 11 8.25 11-8.25L36 17z"/><path fill="#c62828" d="M3 12.298V16.2l10 7.5V11.2L9.876 8.859C9.132 8.301 8.228 8 7.298 8 4.924 8 3 9.924 3 12.298z"/><path fill="#fbc02d" d="M45 12.298V16.2l-10 7.5V11.2l3.124-2.341C39.868 8.301 40.772 8 41.702 8 44.076 8 45 9.924 45 12.298z"/></svg></span>${t('googleLogin')}</button></div>
+      <div class="rgb-wrap"><button class="btn google-btn block" data-act="googleLogin"><span class="gm-logo">${GMAIL_SVG}</span>${t('googleLogin')}</button></div>
+      <div class="auth-chips">
+        <span class="auth-chip">${t('chipIncome')}</span><span class="auth-chip">${t('chipSave')}</span><span class="auth-chip">${t('chipBudget')}</span>
+      </div>
+      <p class="auth-note">🔒 ${t('secNote')}</p>
     </section>`;
+  }
+
+  /* ---------- লগইনের পর: একটি উপদেশ ৩ সেকেন্ড ---------- */
+  function tipPage() {
+    return new Promise(res => {
+      const tip = TIPS[pickTip()];
+      openOverlay(`<div class="tip-page">
+        <div class="tp-ico">🌿</div>
+        <h3 class="tp-h">${t('tipHead')}</h3>
+        <p class="tp-txt">${esc(L() === 'bn' ? tip.bn : tip.en)}</p></div>`);
+      setTimeout(() => { closeOverlay(); res(); }, 3000);
+    });
   }
 
   /* ---------- ওয়েলকাম অ্যানিমেশন (লগইনের পর) ---------- */
@@ -1686,8 +1845,9 @@ const SUB_IMAGES = {
     try { user = await window.AMAR_AUTH.signIn(email, pw); }
     catch (e) { return toast(authError(e), 'err'); }
     syncUser(user);
-    await welcomeAnim(S.data.session.name);
-    go('home');
+    await new Promise(r => setTimeout(r, 2500));
+    await tipPage();
+    go('home', {}, true);
   }
 
   async function register(v) {
@@ -1701,29 +1861,33 @@ const SUB_IMAGES = {
     catch (e) { return toast(authError(e), 'err'); }
     syncUser(user, name);
     if (window.AMAR_AUTH) window.AMAR_AUTH.saveProfile(user, true).catch(() => {});
-    await welcomeAnim(name);
-    go('home');
+    await new Promise(r => setTimeout(r, 2500));
+    await tipPage();
+    go('home', {}, true);
   }
 
   async function googleLogin() {
     if (!window.AMAR_AUTH) return toast(t('errOffline'), 'err');
+    openOverlay(`<div class="ld-wrap"><div class="ld-ring"></div><p class="ld-txt">${t('loading')}</p></div>`);
     let user;
     try { user = await window.AMAR_AUTH.signInGoogle(); }
     catch (e) {
+      closeOverlay();
       if (e && e.code === 'auth/popup-closed-by-user') return;
       return toast(authError(e), 'err');
     }
-    if (!user) return; // redirect হচ্ছে, ফিরে এলে onAuthStateChanged ধরবে
+    if (!user) { closeOverlay(); return; } // redirect হচ্ছে, ফিরে এলে onAuthStateChanged ধরবে
     syncUser(user);
-    await welcomeAnim(S.data.session.name);
-    go('home');
+    await new Promise(r => setTimeout(r, 2500));
+    await tipPage();
+    go('home', {}, true);
   }
 
   async function logout() {
     try { if (window.AMAR_AUTH) await window.AMAR_AUTH.signOut(); } catch (e) { /* ignore */ }
     S.data.session = null;
     persist();
-    go('auth');
+    go('auth', {}, true);
   }
 
   /* ---------- ফর্ম জমা ---------- */
@@ -1737,7 +1901,7 @@ const SUB_IMAGES = {
     else U().records.push({ id: DB.uid(), createdAt: Date.now(), ...data });
     persist();
     toast(t('saved'));
-    go(id ? 'details' : 'home');
+    go(id ? 'details' : 'home', {}, true);
   }
 
   function submitForm(f) {
@@ -1812,7 +1976,8 @@ const SUB_IMAGES = {
       case 'go':
         if (d.m) S.authMode = d.m;
         if (d.to === 'form') return go('form', { type: d.type, id: d.id });
-        return go(d.to, {});
+        return go(d.to, {}, !!d.replace);
+      case 'back': return S.view === 'home' ? undefined : history.back();
       case 'edit': return go('form', { type: d.type, id: d.id });
       case 'del': return del(d.kind, d.id, d.type, d.key);
       case 'goDetail': S.filter = d.f; return go('details', {});
@@ -1912,13 +2077,19 @@ const SUB_IMAGES = {
 
   function showSplash() {
     const sp = $('#splash');
-    const idx = pickTip();
-    const tip = TIPS[idx];
     sp.querySelector('.splash-art').src = ASSETS.splash;
     const txt = sp.querySelector('.sp-tip-text');
-    txt.textContent = L() === 'bn' ? tip.bn : tip.en;
+    if (S.data.session) {
+      // যিনি আগে লগইন করেছেন: প্রতিবার একটি উপদেশ, তারপর সরাসরি ড্যাশবোর্ড
+      const tip = TIPS[pickTip()];
+      txt.textContent = L() === 'bn' ? tip.bn : tip.en;
+    } else {
+      // নতুন ব্যবহারকারী: লগইনের আগে উপদেশ নয়, শুধু অ্যাপের পরিচিতি
+      txt.textContent = t('wlTag');
+    }
     txt.classList.remove('sp-in'); void txt.offsetWidth; txt.classList.add('sp-in');
     const fill = sp.querySelector('.sp-fill');
+    sp.querySelector('.sp-load-t').textContent = t('appLoading');
     fill.style.transition = 'none'; fill.style.width = '0%'; void fill.offsetWidth;
     fill.style.transition = 'width 4s cubic-bezier(.2,.7,.2,1)'; fill.style.width = '92%';
   }
@@ -1937,9 +2108,9 @@ const SUB_IMAGES = {
         sp.classList.add('fade');
         setTimeout(() => {
           sp.classList.add('gone');
-          if (S.data.session) go('home');
-          else if (!S.data.users.length) go('welcome');
-          else go('auth');
+          if (S.data.session) go('home', {}, true);
+          else if (!S.data.users.length) go('welcome', {}, true);
+          else go('auth', {}, true);
         }, 650);
       }, 350);
     });
