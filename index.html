@@ -325,6 +325,12 @@ html.dark .form input:focus,html.dark .form select:focus{background:#17243a}
 }
 
 .tap-press{transform:scale(.965)!important;filter:brightness(.98)}
+/* Google sign-in */
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f2937;border:1px solid var(--line);box-shadow:0 2px 8px rgba(15,23,42,.08)}
+.google-btn:active{transform:scale(.97)}
+.g-logo{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0);color:#fff;font-size:13px;font-weight:800}
+.or-line{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:13px;width:100%}
+.or-line::before,.or-line::after{content:"";flex:1;height:1px;background:var(--line)}
 </style>
 </head>
 <body>
@@ -403,6 +409,8 @@ const T = {
   errPasswordShort:{bn:'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে',en:'Password must be at least 6 characters'},
   errPasswordMatch:{bn:'পাসওয়ার্ড দুটি মেলেনি',en:'Passwords do not match'},
   errOffline:{bn:'ইন্টারনেট বা লগইন সেবা পাওয়া যাচ্ছে না',en:'Cannot reach the login service'},
+  googleLogin:{bn:'Google দিয়ে লগইন',en:'Continue with Google'},
+  orDivider:{bn:'অথবা',en:'or'},
   emptyList:{bn:'এখনো কোনো হিসাব যোগ করা হয়নি',en:'No entries yet'},
   emptyBudget:{bn:'এখনো কোনো বাজেট তৈরি করা হয়নি',en:'No budget created yet'},
   emptyMembers:{bn:'এখনো কোনো সদস্য যোগ করা হয়নি',en:'No family members yet'},
@@ -1038,6 +1046,8 @@ const CLOUD = { enabled: false, async init() { return false; }, status() { retur
     const confirm = isReg ? `<label>${t('confirmPassword')}<input name="confirmPassword" type="password" required></label>` : '';
     return `<section class="auth-page">
       <h2>${t('appName')}</h2>
+      <button class="btn google-btn block" data-act="googleLogin"><span class="g-logo">G</span>${t('googleLogin')}</button>
+      <div class="or-line"><span>${t('orDivider')}</span></div>
       <form class="card form" data-form="${isReg ? 'register' : 'login'}">
         ${fields}
         <label>${t('email')}<input name="email" type="email" required></label>
@@ -1113,6 +1123,20 @@ const CLOUD = { enabled: false, async init() { return false; }, status() { retur
     catch (e) { return toast(authError(e), 'err'); }
     syncUser(user, name);
     await welcomeAnim(name);
+    go('home');
+  }
+
+  async function googleLogin() {
+    if (!window.AMAR_AUTH) return toast(t('errOffline'), 'err');
+    let user;
+    try { user = await window.AMAR_AUTH.signInGoogle(); }
+    catch (e) {
+      if (e && e.code === 'auth/popup-closed-by-user') return;
+      return toast(authError(e), 'err');
+    }
+    if (!user) return; // redirect হচ্ছে, ফিরে এলে onAuthStateChanged ধরবে
+    syncUser(user);
+    await welcomeAnim(S.data.session.name);
     go('home');
   }
 
@@ -1215,6 +1239,7 @@ const CLOUD = { enabled: false, async init() { return false; }, status() { retur
       case 'toggle': S.data.settings[d.k] = !S.data.settings[d.k]; persist(); return render();
       case 'profileToggle': S.data.settings.profileOpen = !S.data.settings.profileOpen; persist(); return render();
       case 'logout': return logout();
+      case 'googleLogin': return googleLogin();
       case 'addmenu':
         return openOverlay(`<h3>${t('add')}</h3>
           ${['income', 'expense', 'savings'].map(k => `<button class="btn ${k} block" data-act="go" data-to="form" data-type="${k}">${t(k)}</button>`).join('')}
@@ -1304,7 +1329,7 @@ const CLOUD = { enabled: false, async init() { return false; }, status() { retur
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -1337,6 +1362,19 @@ const CLOUD = { enabled: false, async init() { return false; }, status() { retur
     signIn: async (email, pw) => (await signInWithEmailAndPassword(auth, email, pw)).user,
     signOut: () => signOut(auth),
     updateName: name => auth.currentUser ? updateProfile(auth.currentUser, { displayName: name }) : Promise.resolve(),
+    signInGoogle: async () => {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      try {
+        return (await signInWithPopup(auth, provider)).user;
+      } catch (e) {
+        if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment' || e.code === 'auth/cancelled-popup-request')) {
+          await signInWithRedirect(auth, provider);
+          return null;
+        }
+        throw e;
+      }
+    },
     onChange: cb => onAuthStateChanged(auth, cb)
   };
   window.dispatchEvent(new Event('amar-auth-ready'));
